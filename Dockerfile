@@ -15,7 +15,7 @@ RUN apt-get update && \
 # Install Deps
 RUN dpkg --add-architecture i386 && \
   apt-get update && \
-  apt-get install -y --force-yes expect git wget libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1 python curl libqt5widgets5 && \
+  apt-get install -y --force-yes expect git wget unzip libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1 python curl libqt5widgets5 && \
   apt-get clean && \
   rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -23,20 +23,29 @@ RUN dpkg --add-architecture i386 && \
 COPY tools /opt/tools
 ENV PATH ${PATH}:/opt/tools
 
-# Install Android SDK
-RUN cd /opt && wget --output-document=android-sdk.tgz --quiet https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz && \
-  tar xzf android-sdk.tgz && \
-  rm -f android-sdk.tgz && \
-  chown -R root.root android-sdk-linux && \
-  /opt/tools/android-accept-licenses.sh "android-sdk-linux/tools/android update sdk --all --no-ui --filter platform-tools,tools" && \
-  /opt/tools/android-accept-licenses.sh "android-sdk-linux/tools/android update sdk --all --no-ui --filter platform-tools,tools,build-tools-25.0.3,android-25,extra-android-support,extra-android-m2repository,extra-google-m2repository,extra-google-google_play_services"
+# Install Android Tools
+RUN cd /opt && \
+  mkdir -p /opt/android-sdk-linux && \
+  wget --output-document=android-sdk-tools.zip --quiet https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip && \
+  unzip -o android-sdk-tools.zip -d android-sdk-linux && \
+  rm -f android-sdk-tools.zip && \
+  chown -R root.root android-sdk-linux
 
 # Setup environment
 ENV ANDROID_HOME /opt/android-sdk-linux
-ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
+ENV PATH ${PATH}:${ANDROID_HOME}/tools:$ANDROID_HOME/tools/bin:${ANDROID_HOME}/platform-tools
 
-RUN which adb
-RUN which android
+RUN git clone https://github.com/mherod/android-sdk-licenses.git $ANDROID_HOME/licenses
+
+# Install SDK components
+RUN cd /opt && \
+  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager 'tools'" && \
+  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager 'platforms;android-25'" && \
+  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager 'platforms;android-26'" && \
+  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager 'ndk-bundle'" && \
+  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager 'extras;android;m2repository'" && \
+  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager 'extras;google;m2repository'" && \
+  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager --update --channel=3 --include_obsolete"
 
 # Cleaning
 RUN apt-get clean
