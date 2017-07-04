@@ -53,7 +53,7 @@ RUN cd /opt && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager 'ndk-bundle' && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager 'extras;android;m2repository' && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager 'extras;google;m2repository' && \
-  yes | $ANDROID_HOME/tools/bin/sdkmanager --list && \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager --list
 
 # Cleaning
 RUN apt-get clean && \
