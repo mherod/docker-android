@@ -45,16 +45,15 @@ ENV PATH ${PATH}:${ANDROID_HOME}/tools:$ANDROID_HOME/tools/bin:${ANDROID_HOME}/p
 
 # Install SDK components
 RUN cd /opt && \
-  git clone https://github.com/mherod/android-sdk-licenses.git $ANDROID_HOME/licenses && \
-  cd $ANDROID_HOME/ && \
-  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager --update --channel=3 --include_obsolete" && \
-  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager 'tools'" && \
-  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager 'platforms;android-25'" && \
-  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager 'platforms;android-26'" && \
-  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager 'ndk-bundle'" && \
-  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager 'extras;android;m2repository'" && \
-  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager 'extras;google;m2repository'" && \
-  /opt/tools/android-accept-licenses.sh "$ANDROID_HOME/tools/bin/sdkmanager --list" && \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses && \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager --update --channel=3 --include_obsolete && \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager 'tools' && \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager 'platforms;android-25' && \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager 'platforms;android-26' && \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager 'ndk-bundle' && \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager 'extras;android;m2repository' && \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager 'extras;google;m2repository' && \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager --list && \
 
 # Cleaning
 RUN apt-get clean && \
