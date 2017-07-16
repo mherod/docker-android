@@ -22,6 +22,9 @@ RUN dpkg --add-architecture i386 && \
 # Copy install tools
 ENV PATH ${PATH}:/opt/tools
 
+# Cleaning
+RUN apt-get clean && rm -rf /tmp/*
+
 # Install Android Tools
 RUN cd /opt && mkdir -p /opt/android-sdk-linux
 
@@ -40,14 +43,11 @@ RUN mkdir -p /root/.android && touch /root/.android/repositories.cfg
 ENV PATH ${PATH}:${ANDROID_HOME}/tools:$ANDROID_HOME/tools/bin:${ANDROID_HOME}/platform-tools
 
 # Install SDK components
-RUN cd /opt && \
+ONBUILD RUN cd /opt && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager --update --channel=0 --include_obsolete && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager 'tools' && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager 'platform-tools'
-
-# Cleaning
-RUN apt-get clean && rm -rf /tmp/*
 
 # GO to workspace
 RUN mkdir -p /opt/workspace
