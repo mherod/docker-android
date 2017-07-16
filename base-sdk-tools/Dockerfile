@@ -43,11 +43,15 @@ RUN mkdir -p /root/.android && touch /root/.android/repositories.cfg
 ENV PATH ${PATH}:${ANDROID_HOME}/tools:$ANDROID_HOME/tools/bin:${ANDROID_HOME}/platform-tools
 
 # Install SDK components
-ONBUILD RUN cd /opt && \
+RUN cd /opt && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager --update --channel=0 --include_obsolete && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager 'tools' && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager 'platform-tools'
+  
+ONBUILD RUN cd /opt && \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses && \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager --update --channel=0 --include_obsolete
 
 # GO to workspace
 RUN mkdir -p /opt/workspace

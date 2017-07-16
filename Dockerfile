@@ -16,7 +16,7 @@ RUN apt-get clean && rm -rf /tmp/*
 RUN mkdir -p /opt/workspace
 
 # Install SDK components
-ONBUILD RUN cd /opt && \
+RUN cd /opt && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager --update --channel=3 --include_obsolete && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager 'tools' && \
@@ -26,5 +26,8 @@ ONBUILD RUN cd /opt && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager 'extras;android;m2repository' && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager 'extras;google;m2repository' && \
   yes | $ANDROID_HOME/tools/bin/sdkmanager --list
+  
+ONBUILD RUN cd /opt && \
+  yes | $ANDROID_HOME/tools/bin/sdkmanager --update --channel=3 --include_obsolete && \
 
 WORKDIR /opt/workspace
