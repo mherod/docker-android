@@ -19,7 +19,7 @@ RUN cd /opt && \
     yes | $ANDROID_HOME/tools/bin/sdkmanager 'system-images;android-23;default;x86' && \
     yes | $ANDROID_HOME/tools/bin/sdkmanager --list
 
-ONBUILD RUN echo no | $ANDROID_HOME/tools/bin/avdmanager \
+RUN echo no | $ANDROID_HOME/tools/bin/avdmanager \
 	 create avd --name test23 \
 				--package 'system-images;android-23;default;x86' \
 				--abi 'default/x86' \
