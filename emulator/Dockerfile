@@ -14,16 +14,16 @@ RUN adb devices
 RUN cd /opt && \
     yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses && \
     yes | $ANDROID_HOME/tools/bin/sdkmanager --update --channel=3 --include_obsolete && \
-    yes | $ANDROID_HOME/tools/bin/sdkmanager 'system-images;android-26;google_apis_playstore;x86' && \
+    yes | $ANDROID_HOME/tools/bin/sdkmanager 'system-images;android-23;default;x86' && \
     yes | $ANDROID_HOME/tools/bin/sdkmanager --list
 
 RUN echo no | $ANDROID_HOME/tools/bin/avdmanager \
-	 create avd --name test26 \
-				--package 'system-images;android-26;google_apis_playstore;x86' \
-				--abi 'google_apis_playstore/x86' \
+	 create avd --name test23 \
+				--package 'system-images;android-23;default;x86' \
+				--abi 'default/x86' \
 				--force
 
 RUN cd $ANDROID_HOME/tools && \
-    $ANDROID_HOME/tools/emulator -avd test26 &
+    $ANDROID_HOME/tools/emulator -avd test23 &
 
 RUN until adb -e shell getprop init.svc.bootanim; do sleep 1; done
