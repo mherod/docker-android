@@ -6,10 +6,10 @@ RUN mkdir -p /root/.android && touch /root/.android/repositories.cfg
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libqt5widgets5
 ENV QT_QPA_PLATFORM offscreen
 ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${ANDROID_HOME}/tools/lib64
+ENV ANDROID_EMULATOR_FORCE_32BIT true
 RUN apt-get clean && rm -rf /tmp/*
 RUN mkdir -p /opt/workspace
 WORKDIR /opt/workspace
-RUN adb devices
 
 RUN cd /opt && \
     yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses && \
@@ -23,7 +23,4 @@ RUN echo no | $ANDROID_HOME/tools/bin/avdmanager \
 				--abi 'default/x86' \
 				--force
 
-RUN cd $ANDROID_HOME/tools && \
-    $ANDROID_HOME/tools/emulator -avd test23 &
-
-RUN until adb -e shell getprop init.svc.bootanim; do sleep 1; done
+ENTRYPOINT cd $ANDROID_HOME/tools && $ANDROID_HOME/tools/emulator -avd test23; until adb -e shell getprop init.svc.bootanim; do sleep 1; done; adb devices
